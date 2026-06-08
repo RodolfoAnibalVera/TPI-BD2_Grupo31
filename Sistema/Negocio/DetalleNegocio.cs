@@ -16,18 +16,7 @@ namespace Negocio
 
             try
             {
-                datos.setearConsulta(@"
-                   SELECT l.Id, l.Titulo, l.Descripcion, l.ISBN, l.Idioma, l.AnioEdicion, l.Paginas, l.Stock, l.Activo,
-                   l.PrecioCompra, l.PrecioVenta, l.PorcentajeGanancia, l.ImagenUrl, l.BestSeller,
-                   a.Id AS IdAutor, a.Nombre AS NombreAutor, a.Nacionalidad,
-                   e.Id AS IdEditorial, e.Nombre AS NombreEditorial, e.Pais,
-                   c.Id AS CategoriaId, c.Nombre AS CategoriaNombre
-                   FROM Libros l
-                   INNER JOIN Categorias c ON l.IdCategoria = c.Id
-                   INNER JOIN Autores a ON l.IdAutor = a.Id
-                   INNER JOIN Editoriales e ON l.IdEditorial = e.Id
-                   WHERE l.Id = @id
-                ");
+                datos.setearConsulta("SELECT * FROM VW_LibroDetalle WHERE Id = @id");
 
                 datos.setearParametro("@id", id);
                 datos.ejecutarLectura();

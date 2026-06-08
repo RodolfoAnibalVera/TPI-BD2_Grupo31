@@ -4,6 +4,7 @@ using Negocio;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -103,6 +104,12 @@ namespace E_Commerce_Bookstore
                     return;
                 }
 
+                // Descontar stock //
+                //***ACA USO EL SP DE VALIDACION Y DESCUENTO DE STOCK***
+                //PARA QUE CORTE EL FLUJO SI CAPTURA UNA EXEPCION LANZADA DESDE LA BD
+                //Y NO DEJE INCONSISTENCIAS
+                carritoNegocio.DescontarStockPorCarrito(carrito.Id);
+
                 // Crear pedido
                 PedidoNegocio pedidoNegocio = new PedidoNegocio();
                 Pedido pedido = new Pedido();
@@ -176,8 +183,7 @@ namespace E_Commerce_Bookstore
                                                  nombre, apellido, cp, direccion);
                 }
 
-                // Descontar stock y cerrar carrito
-                carritoNegocio.DescontarStockPorCarrito(carrito.Id);
+                //Desactivar carrito
                 carritoNegocio.DesactivarCarrito(carrito.Id);
                 Session["Carrito"] = null;
 
@@ -194,7 +200,11 @@ namespace E_Commerce_Bookstore
 
                 Response.Redirect("ConfirmacionCompra.aspx", false);
             }
-            catch
+            catch (SqlException)
+            {
+                Response.Redirect("Error.aspx", false);
+            }
+            catch (Exception)
             {
                 Response.Redirect("Error.aspx", false);
             }

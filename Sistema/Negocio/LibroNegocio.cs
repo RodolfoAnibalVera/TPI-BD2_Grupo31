@@ -16,18 +16,7 @@ namespace Negocio
 
             try
             {
-                datos.setearConsulta(@"
-                   SELECT L.Id, L.Titulo, L.ISBN, L.Stock, L.PrecioVenta, L.ImagenUrl, L.BestSeller,
-                   A.Id AS IdAutor, A.Nombre AS AutorNombre,
-                   E.Id AS IdEditorial, E.Nombre AS EditorialNombre,
-                   C.Id AS IdCategoria, C.Nombre AS CategoriaNombre
-                   FROM LIBROS L
-                   LEFT JOIN AUTORES A ON L.IdAutor = A.Id
-                   LEFT JOIN EDITORIALES E ON L.IdEditorial = E.Id
-                   LEFT JOIN CATEGORIAS C ON L.IdCategoria = C.Id
-                   WHERE L.Activo = 1
-                   ORDER BY L.Titulo
-                ");
+                datos.setearConsulta("SELECT * FROM VW_LibrosDisponibles ORDER BY Titulo");
 
                 datos.ejecutarLectura();
 
@@ -81,21 +70,7 @@ namespace Negocio
 
             try
             {
-                datos.setearConsulta(@"
-            SELECT 
-                l.*, 
-                c.Id AS IdCategoria,
-                c.Nombre AS CategoriaNombre,
-                e.Id AS IdEditorial,
-                e.Nombre AS EditorialNombre,
-                a.Id AS IdAutor,
-                a.Nombre AS AutorNombre
-            FROM LIBROS l
-            INNER JOIN CATEGORIAS c ON l.IdCategoria = c.Id
-            LEFT JOIN EDITORIALES e ON l.IdEditorial = e.Id
-            LEFT JOIN AUTORES a ON l.IdAutor = a.Id
-            WHERE l.IdCategoria = @idCategoria
-        ");
+                datos.setearConsulta("SELECT * FROM VW_LibrosPorCategoria WHERE IdCategoria = @idCategoria ORDER BY Titulo");
 
                 datos.setearParametro("@idCategoria", idCategoria);
                 datos.ejecutarLectura();

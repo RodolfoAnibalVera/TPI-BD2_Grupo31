@@ -1,6 +1,7 @@
 ﻿using Dominio;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,72 +10,6 @@ namespace Negocio
 {
     public class CarritoNegocio
     {
-        public decimal ObtenerTotalCarrito(int idCliente)
-        {
-            AccesoDatos datos = new AccesoDatos();
-            try
-            {
-                string consulta = @"
-                    SELECT SUM(ci.Cantidad * ci.PrecioUnitario)
-                    FROM CARRITO_ITEMS ci
-                    INNER JOIN CARRITOS c ON c.Id = ci.IdCarrito
-                    WHERE c.IdCliente = @idCliente AND c.Activo = 1";
-
-                datos.setearConsulta(consulta);
-                datos.setearParametro("@idCliente", idCliente);
-                datos.ejecutarLectura();
-
-                if (datos.Lector.Read() && datos.Lector[0] != DBNull.Value)
-                    return Convert.ToDecimal(datos.Lector[0]);
-
-                return 0m;
-            }
-            finally
-            {
-                datos.cerrarConexion();
-            }
-        }
-        public int AsegurarCarritoActivo(int idCliente)
-        {
-            // Buscar existente
-            AccesoDatos datos = new AccesoDatos();
-            try
-            {
-                datos.setearConsulta("SELECT Id FROM CARRITOS WHERE IdCliente=@c AND Activo=1");
-                datos.setearParametro("@c", idCliente);
-                datos.ejecutarLectura();
-                if (datos.Lector.Read())
-                    return Convert.ToInt32(datos.Lector[0]);
-            }
-            finally { datos.cerrarConexion(); }
-
-            // Crear si no existe
-            //AccesoDatos datos = new AccesoDatos();
-            try
-            {
-                datos.setearConsulta("INSERT INTO CARRITOS (IdCliente,Activo) VALUES (@c,1)");
-                datos.setearParametro("@c", idCliente);
-                datos.ejecutarAccion();
-            }
-            catch
-            {
-                datos.cerrarConexion();
-                return 0;
-            }
-            finally { datos.cerrarConexion(); }
-
-            // Devolver Id creado
-            //AccesoDatos datos = new AccesoDatos();
-            try
-            {
-                datos.setearConsulta("SELECT TOP 1 Id FROM CARRITOS WHERE IdCliente=@c AND Activo=1 ORDER BY Id DESC");
-                datos.setearParametro("@c", idCliente);
-                datos.ejecutarLectura();
-                return datos.Lector.Read() ? Convert.ToInt32(datos.Lector[0]) : 0;
-            }
-            finally { datos.cerrarConexion(); }
-        }
-
         //  NUEVO CODIGO DESDE ACA //
 
         public CarritoCompra ObtenerOCrearCarritoActivo(string cookieId, int? idCliente = null)
@@ -492,42 +427,17 @@ namespace Negocio
 
             try
             {
-                datos.setearConsulta(@"
-                   SELECT IdLibro, Cantidad
-                   FROM CARRITO_ITEMS
-                   WHERE IdCarrito = @idCarrito
-                ");
+                datos.setearConsulta("EXEC SP_DescontarStockPorCarrito @idCarrito"); ;
                 datos.setearParametro("@idCarrito", idCarrito);
-                datos.ejecutarLectura();
-
-                var items = new List<Tuple<int, int>>(); // IdLibro, Cantidad
-
-                while (datos.Lector.Read())
-                {
-                    int idLibro = (int)datos.Lector["IdLibro"];
-                    int cantidad = (int)datos.Lector["Cantidad"];
-                    items.Add(Tuple.Create(idLibro, cantidad));
-                }
-
-                datos.cerrarConexion();
-
-                foreach (var item in items)
-                {
-                    datos = new AccesoDatos();
-                    datos.setearConsulta(@"
-                       UPDATE LIBROS
-                       SET Stock = Stock - @cantidad
-                       WHERE Id = @idLibro AND Activo = 1 AND Stock >= @cantidad
-                    ");
-                    datos.setearParametro("@idLibro", item.Item1);
-                    datos.setearParametro("@cantidad", item.Item2);
-                    datos.ejecutarAccion();
-                    datos.cerrarConexion();
-                }
+                datos.ejecutarAccion();
             }
-            catch (Exception ex)
+            catch (SqlException)
             {
-                throw ex;
+                throw;
+            }
+            finally
+            {
+                datos.cerrarConexion();
             }
         }
         public void FusionarCarritos(string cookieId, int idCliente)
