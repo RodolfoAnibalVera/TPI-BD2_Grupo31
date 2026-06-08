@@ -1,0 +1,50 @@
+--STORE_PROCEDURE--
+
+USE BOOKSTORE_DB
+GO
+
+--PROCEDIMIENTO ALMACENADO "SP_DescontarStockPorCarrito" PARA USARLO EN CONFIRMACION DE COMPRA
+--PARA DESCONTAR STOCK DE LIBROS SEGUN CANTIDAD DE ITEMS
+--DEL CARRITO, HACIENDO UN UPDATE PERO
+--VALIDANDO QUE EXISTA EL STOCK DE TODOS LOS ITEMS
+--PARA CONTINUAR Y FINALIZAR LA COMPRA, SI UN SOLO ITEM
+--TIENE STOCK INSUFICIENTE CANCELA EL PROCESO, LANZA UNA EXEPCION QUE
+--SE CAPTURA Y REDIRIJE A PANTALLA "ERROR" EN LA APLICACION
+
+CREATE PROCEDURE SP_DescontarStockPorCarrito
+    @idCarrito INT
+AS
+BEGIN
+    BEGIN TRY
+        BEGIN TRANSACTION;
+
+        IF EXISTS (
+            SELECT 1
+            FROM LIBROS L
+            INNER JOIN CARRITO_ITEMS CI ON L.Id = CI.IdLibro
+            WHERE CI.IdCarrito = @idCarrito
+              AND (L.Stock < CI.Cantidad OR L.Activo = 0)
+        )
+        BEGIN
+            RAISERROR('Stock insuficiente para uno o más libros del carrito.', 16, 1);
+            ROLLBACK TRANSACTION;
+            RETURN;
+        END
+
+        UPDATE L
+        SET L.Stock = L.Stock - CI.Cantidad
+        FROM LIBROS L
+        INNER JOIN CARRITO_ITEMS CI ON L.Id = CI.IdLibro
+        WHERE CI.IdCarrito = @idCarrito;
+
+        COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        ROLLBACK TRANSACTION;
+
+        DECLARE @ErrorMessage NVARCHAR(4000) = ERROR_MESSAGE();
+        RAISERROR(@ErrorMessage, 16, 1);
+    END CATCH
+END;
+GO
+
