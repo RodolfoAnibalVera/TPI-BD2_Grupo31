@@ -51,6 +51,7 @@
     <Compile Include="CarritoCompra.cs" />
     <Compile Include="Categoria.cs" />
     <Compile Include="Cliente.cs" />
+    <Compile Include="ClienteFrecuente.cs" />
     <Compile Include="ClienteGestionDTO.cs" />
     <Compile Include="Editorial.cs" />
     <Compile Include="Envio.cs" />

@@ -111,6 +111,10 @@ namespace E_Commerce_Bookstore
         protected void btnLimpiar_Click(object sender, EventArgs e)
         {
             LimpiarCampos();
+
+            dgvClientesFrecuentes.Visible = false;
+            dgvPedidos.Visible = true;
+
             cargarGrilla();
         }
 
@@ -222,5 +226,28 @@ namespace E_Commerce_Bookstore
                 throw new Exception("Debe seleccionar un estado del pedido.");
         }
 
+        protected void btnClientesFrecuentes_Click(object sender, EventArgs e)
+        {
+            if (dgvClientesFrecuentes.Visible)
+            {
+                dgvClientesFrecuentes.Visible = false;
+                dgvPedidos.Visible = true;
+                cargarGrilla();
+
+                btnClientesFrecuentes.Text = "Clientes Frecuentes";
+            }
+            else
+            {
+                dgvPedidos.Visible = false;
+
+                dgvClientesFrecuentes.DataSource =
+                    negocio.ListarClientesFrecuentes();
+
+                dgvClientesFrecuentes.DataBind();
+                dgvClientesFrecuentes.Visible = true;
+
+                btnClientesFrecuentes.Text = "Volver a Pedidos";
+            }
+        }
     }
 }

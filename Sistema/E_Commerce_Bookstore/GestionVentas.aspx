@@ -3,12 +3,12 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
-    <h2 class="text-center mt-4 mb-4">Gestión de Pedidos</h2>
+    <h2 class="text-center mt-4 mb-4">Gestión de Ventas</h2>
 
     <!-- FORMULARIO -->
     <div class="card p-4 mb-5">
 
-        <h4 class="mb-4">Detalle del Pedido</h4>
+        <h4 class="mb-4">Detalle de Venta</h4>
         <asp:Label ID="lbMensaje" runat="server" CssClass="fw-bold mt-3 text-center d-block"></asp:Label>
 
         <div class="row">
@@ -78,11 +78,13 @@
 
             <asp:Button ID="btnDetallePedido" runat="server" Text="Ver detalle.." CssClass="btn btn-primary"
                 OnClick="btnDetallePedido_Click1" />
+
+
         </div>
     </div>
 
     <!-- FILTRO -->
-    <div class="row mb-3">
+    <div class="row mb-6 mb-4">
         <div class="col-md-3">
             <asp:TextBox ID="txtFiltro" runat="server" CssClass="form-control" placeholder="Buscar por cliente o nro pedido..."></asp:TextBox>
         </div>
@@ -94,9 +96,16 @@
             <asp:Button ID="btnLimpiar" runat="server" Text="Limpiar" CssClass="btn btn-secondary w-100"
                 OnClick="btnLimpiar_Click" />
         </div>
+        <div class="col-md-2">
+            <asp:Button ID="btnClientesFrecuentes"
+                runat="server"
+                Text="Clientes Frecuentes"
+                CssClass="btn btn-info ms-2"
+                OnClick="btnClientesFrecuentes_Click" />
+        </div>
     </div>
 
-    <!-- GRILLA -->
+    <!-- GRILLA PEDIDOS -->
     <asp:GridView ID="dgvPedidos" runat="server" AutoGenerateColumns="False"
         CssClass="table table-bordered table-hover text-center"
         DataKeyNames="Id"
@@ -113,4 +122,13 @@
             <asp:CommandField ShowSelectButton="true" SelectText="Seleccionar" />
         </Columns>
     </asp:GridView>
+
+    <!-- GRILLA CLIENTES FRECUENTES -->
+    <asp:GridView ID="dgvClientesFrecuentes"
+        runat="server"
+        AutoGenerateColumns="true"
+        CssClass="table table-bordered table-striped"
+        Visible="false">
+    </asp:GridView>
+
 </asp:Content>

@@ -92,3 +92,21 @@ INNER JOIN Categorias C ON L.IdCategoria = C.Id
 LEFT JOIN Autores A ON L.IdAutor = A.Id
 LEFT JOIN Editoriales E ON L.IdEditorial = E.Id;
  
+
+---Implementación de Vista SQL: Clientes Frecuentes
+---permite obtener información resumida de los clientes que realizaron compras en la plataforma, 
+---mostrando la cantidad de pedidos efectuados y el total gastado por cada uno.
+
+CREATE VIEW VW_ClientesFrecuentes
+AS
+SELECT
+    C.Nombre + ' ' + C.Apellido AS Cliente,
+    COUNT(P.Id) AS CantidadPedidos,
+    SUM(P.Total) AS TotalGastado
+FROM CLIENTES C
+INNER JOIN PEDIDOS P
+    ON C.Id = P.IdCliente
+GROUP BY
+    C.Nombre,
+    C.Apellido;
+GO

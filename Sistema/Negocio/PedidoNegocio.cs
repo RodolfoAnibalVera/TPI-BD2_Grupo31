@@ -500,5 +500,34 @@ namespace Negocio
 
             return lista;
         }
+
+        public List<ClienteFrecuente> ListarClientesFrecuentes()
+        {
+            List<ClienteFrecuente> lista = new List<ClienteFrecuente>();
+            AccesoDatos datos = new AccesoDatos();
+
+            try
+            {
+                datos.setearConsulta("SELECT * FROM VW_ClientesFrecuentes");
+                datos.ejecutarLectura();
+
+                while (datos.Lector.Read())
+                {
+                    ClienteFrecuente aux = new ClienteFrecuente();
+
+                    aux.Cliente = datos.Lector["Cliente"].ToString();
+                    aux.CantidadPedidos = (int)datos.Lector["CantidadPedidos"];
+                    aux.TotalGastado = (decimal)datos.Lector["TotalGastado"];
+
+                    lista.Add(aux);
+                }
+
+                return lista;
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+        }
     }
 }
