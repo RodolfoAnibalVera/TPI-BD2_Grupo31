@@ -529,5 +529,26 @@ namespace Negocio
                 datos.cerrarConexion();
             }
         }
+
+        public void ActualizarEstadoPedido(int idPedido, string nuevoEstado)
+        {
+            AccesoDatos datos = new AccesoDatos();
+
+            try
+            {
+                datos.setearConsulta(
+                    "EXEC SP_ActualizarEstadoPedido @IdPedido, @NuevoEstado");
+
+                datos.setearParametro("@IdPedido", idPedido);
+                datos.setearParametro("@NuevoEstado", nuevoEstado);
+
+                datos.ejecutarAccion();
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
+        }
+
     }
 }

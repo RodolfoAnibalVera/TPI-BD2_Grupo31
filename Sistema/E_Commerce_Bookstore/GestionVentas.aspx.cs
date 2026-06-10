@@ -249,5 +249,37 @@ namespace E_Commerce_Bookstore
                 btnClientesFrecuentes.Text = "Volver a Pedidos";
             }
         }
+
+        protected void dgvPedidos_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
+            if (e.CommandName == "ActualizarEstado")
+            {
+                try
+                {
+                    int idPedido = Convert.ToInt32(e.CommandArgument);
+
+                    GridViewRow fila =
+                        ((Control)e.CommandSource).NamingContainer as GridViewRow;
+
+                    DropDownList ddl =
+                        (DropDownList)fila.FindControl("ddlEstadoGrid");
+
+                    string nuevoEstado = ddl.SelectedValue;
+
+                    negocio.ActualizarEstadoPedido(idPedido, nuevoEstado);
+
+                    lbMensaje.Text = "✅ Estado actualizado correctamente.";
+                    lbMensaje.ForeColor = System.Drawing.Color.Green;
+
+                    cargarGrilla();
+                }
+                catch (Exception ex)
+                {
+                    lbMensaje.Text = "❌ Error al actualizar estado: " + ex.Message;
+                    lbMensaje.ForeColor = System.Drawing.Color.Red;
+                }
+            }
+        }
+
     }
 }

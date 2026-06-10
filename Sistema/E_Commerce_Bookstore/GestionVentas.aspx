@@ -106,17 +106,45 @@
     </div>
 
     <!-- GRILLA PEDIDOS -->
-    <asp:GridView ID="dgvPedidos" runat="server" AutoGenerateColumns="False"
+    <asp:GridView ID="dgvPedidos"
+        runat="server"
         CssClass="table table-bordered table-hover text-center"
+        AutoGenerateColumns="False"
         DataKeyNames="Id"
-        OnSelectedIndexChanged="dgvPedidos_SelectedIndexChanged">
+        OnSelectedIndexChanged="dgvPedidos_SelectedIndexChanged"
+        OnRowCommand="dgvPedidos_RowCommand">
 
         <Columns>
             <asp:BoundField HeaderText="ID" DataField="Id" />
             <asp:BoundField HeaderText="Cliente" DataField="ClienteNombre" />
             <asp:BoundField HeaderText="N° Pedido" DataField="NumeroPedido" />
             <asp:BoundField HeaderText="Fecha" DataField="Fecha" DataFormatString="{0:dd/MM/yyyy}" />
-            <asp:BoundField HeaderText="Estado" DataField="Estado" />
+
+            <asp:TemplateField HeaderText="Estado">
+                <ItemTemplate>
+                    <asp:DropDownList ID="ddlEstadoGrid"
+                        runat="server"
+                        CssClass="form-select form-select-sm"
+                        SelectedValue='<%# Bind("Estado") %>'>
+                        <asp:ListItem>Pendiente</asp:ListItem>
+                        <asp:ListItem>Enviado</asp:ListItem>
+                        <asp:ListItem>Entregado</asp:ListItem>
+                        <asp:ListItem>Cancelado</asp:ListItem>
+                    </asp:DropDownList>
+                </ItemTemplate>
+            </asp:TemplateField>
+
+            <asp:TemplateField HeaderText="Acción">
+                <ItemTemplate>
+                    <asp:Button ID="btnActualizarEstado"
+                        runat="server"
+                        Text="Actualizar"
+                        CssClass="btn btn-sm btn-primary"
+                        CommandName="ActualizarEstado"
+                        CommandArgument='<%# Eval("Id") %>' />
+                </ItemTemplate>
+            </asp:TemplateField>
+
             <asp:BoundField HeaderText="Total" DataField="Total" DataFormatString="{0:C}" />
 
             <asp:CommandField ShowSelectButton="true" SelectText="Seleccionar" />

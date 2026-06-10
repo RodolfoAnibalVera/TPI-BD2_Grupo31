@@ -48,3 +48,32 @@ BEGIN
 END;
 GO
 
+---Se creó el Stored Procedure SP_ActualizarEstadoPedido.
+---El procedimiento recibe como parámetros el identificador del pedido y el nuevo estado, 
+---realizando la modificación directamente en la base de datos.
+
+DROP PROCEDURE SP_ActualizarEstadoPedido;
+GO
+
+CREATE PROCEDURE SP_ActualizarEstadoPedido
+(
+    @IdPedido INT,
+    @NuevoEstado VARCHAR(20)
+)
+AS
+BEGIN
+
+    IF @NuevoEstado NOT IN
+    ('Pendiente','Enviado','Entregado','Cancelado')
+    BEGIN
+        RAISERROR('Estado no valido',16,1);
+        RETURN;
+    END
+
+    UPDATE PEDIDOS
+    SET Estado = @NuevoEstado
+    WHERE Id = @IdPedido;
+
+END
+GO
+
