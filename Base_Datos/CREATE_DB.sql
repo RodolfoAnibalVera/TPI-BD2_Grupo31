@@ -205,3 +205,12 @@ CREATE TABLE FACTURAS (
     CONSTRAINT FK_Facturas_Pedido
         FOREIGN KEY (IdPedido) REFERENCES PEDIDOS(Id) ON DELETE CASCADE
 );
+
+/* =============================================================
+   5) AUDITORIA
+   ============================================================= */
+
+CREATE TABLE LOG_ELIMINACION_PEDIDOS (
+    IdPedido INT,
+    FechaEliminacion DATETIME DEFAULT GETDATE()
+);
