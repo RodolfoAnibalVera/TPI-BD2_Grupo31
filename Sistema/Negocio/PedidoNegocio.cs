@@ -1,6 +1,7 @@
 ﻿using Dominio;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -410,7 +411,14 @@ namespace Negocio
                 datos.setearParametro("@id", id);
                 datos.ejecutarAccion();
             }
-            finally { datos.cerrarConexion(); }
+            catch (SqlException ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            finally
+            {
+                datos.cerrarConexion();
+            }
         }
 
         public Pedido ObtenerPedido(int id)
