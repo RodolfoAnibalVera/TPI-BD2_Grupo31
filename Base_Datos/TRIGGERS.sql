@@ -103,3 +103,24 @@ BEGIN
 
 END
 GO
+
+
+--TRIGGER "TR_DevolverStockAlCancelarPedido" SE DISPARA CUANDO A UN PEDIDO SE LE ACTUALIZA EL ESTADO Y CAMBIA A CANCELADO
+--DEVUELVE EL STOCK DE LIBROS QUE SE ENCUENTREN EN UN PEDIDO CANCELADO
+
+CREATE TRIGGER TR_DevolverStockAlCancelarPedido
+ON PEDIDOS
+AFTER UPDATE
+AS
+BEGIN
+    UPDATE L
+    SET L.Stock = L.Stock + PD.Cantidad
+    FROM LIBROS L
+    INNER JOIN PEDIDOS_DETALLE PD ON L.Id = PD.IdLibro
+    INNER JOIN INSERTED I ON PD.IdPedido = I.Id
+    INNER JOIN DELETED D ON I.Id = D.Id
+    WHERE I.Estado = 'Cancelado' AND D.Estado <> 'Cancelado';
+
+    RAISERROR('Se devolvió el stock de los libros porque el pedido fue cancelado.', 0, 1) WITH NOWAIT;
+END;
+GO
