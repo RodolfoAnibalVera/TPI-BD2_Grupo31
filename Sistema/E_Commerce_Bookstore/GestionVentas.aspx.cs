@@ -30,7 +30,7 @@ namespace E_Commerce_Bookstore
                 int id = int.Parse(txtId.Text);
                 negocio.Eliminar(id);
 
-                lbMensaje.Text = "✅ Pedido eliminado correctamente. Se devolvió el stock del libro.";
+                lbMensaje.Text = "✅ Pedido eliminado correctamente.";
                 lbMensaje.ForeColor = System.Drawing.Color.Red;
 
                 cargarGrilla();
