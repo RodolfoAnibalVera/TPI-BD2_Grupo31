@@ -121,14 +121,15 @@
                                     </div>
 
                                     <div class="col-md-4">
-                                        <label for="txtPrecioVenta" class="form-label">Precio Venta</label>
-                                        <asp:TextBox ID="txtPrecioVenta" runat="server" CssClass="form-control"></asp:TextBox>
-                                    </div>
-
-                                    <div class="col-md-4">
                                         <label for="txtPorcentajeGanancia" class="form-label">% Ganancia</label>
                                         <asp:TextBox ID="txtPorcentajeGanancia" runat="server" CssClass="form-control"></asp:TextBox>
                                     </div>
+
+                                    <div class="col-md-4">
+                                        <label for="txtPrecioVenta" class="form-label">Precio Venta</label>
+                                        <asp:TextBox ID="txtPrecioVenta" runat="server" CssClass="form-control bg-light" ReadOnly="true"></asp:TextBox>
+                                    </div>
+
 
                                     <!-- Botones de gestion -->
                                     <div class="text-center mt-4">
