@@ -52,8 +52,6 @@ GO
 ---El procedimiento recibe como parámetros el identificador del pedido y el nuevo estado, 
 ---realizando la modificación directamente en la base de datos.
 
-DROP PROCEDURE SP_ActualizarEstadoPedido;
-GO
 
 CREATE PROCEDURE SP_ActualizarEstadoPedido
 (
